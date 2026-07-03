@@ -51,7 +51,7 @@ Same repeating tool calls, snowballing tokens, and no erroring out.
 The loop where every step presents healthy runs all night.
 
 2-gram
-`aggregate_metrics`/`export_pdf` repeated 320x, every call `status: ok`:
+`aggregate_metrics`/`export_pdf` repeated 320×, every call `status: ok`:
 
 ```jsonl
 {"event_type": "tool_call", "tool": "aggregate_metrics", "agent_id": "agent-report-01", "tokens_in": 400}
@@ -162,32 +162,26 @@ scored by average precision.
 
 ![Precision/recall curve: rule suite vs isolation forest](data/sample/pr_isoforest.png)
 
-The curated rules win on aggregate, roughly 0.83 to 0.49. Most of the planted attacks
+The curated rules win on aggregate, roughly 0.83 to 0.49 AP. Most of the planted attacks
 violate hard invariants (a cross-tenant read, a tool the card never
 declared). A rule encodes an invariant exactly; a 21-dimension behavioral
 vector barely feels it.
 
-But two low grade attacks were synthed to dodge rules by staying politely
-under every threshold. To the forest, the joint displacement is an obvious anomaly.
+But 2 unremarkable attacks that politely ducked under every threshold: a few
+extra steps, slightly elevated latency, a few additional errors —
+nothing egregious enough to trip. The forest sees the whole session as
+one point in feature space, and several dials moving simultaneously is
+a joint displacement easily flagged.
 
-```jsonl
-{"event_type": "tool_call", "tool": "read_ticket", "agent_id": "agent-support-01", "tokens_in": 280}
-{"event_type": "tool_result", "tool": "read_ticket", "status": "ok", "latency_ms": 793.0, "tokens_out": 130}
-```
-`low_and_slow_compromise`: every dial drifts ~2.5× at once — 11 steps versus
-the benign norm, latency at 2.6× baseline (rule fires at 4×), ~18% errors
-(rule fires at 30%) — each comfortably under its own threshold. Only the
-joint shift trips the forest.
+No free lunch: at the 95th operating threshold, the forest flags 26 sessions:
+8 true positives, **18 false positives** (precision 0.31, recall 0.47) — a long
+way from the detection suite's 0 FP / 1.00 precision. It ranks real attacks
+higher than benign traffic on average (AP 0.49), but any threshold loose enough
+to catch a trove of attacks also catches benign variance. The two
+rules-blind scenarios are bought at that cost.
 
-```jsonl
-{"event_type": "tool_call", "tool": "fetch_invoice", "agent_id": "agent-finops-01", "tokens_in": 180}
-{"event_type": "tool_result", "tool": "fetch_invoice", "status": "ok", "latency_ms": 1182.0, "tokens_out": 80}
-```
-`dense_burst_anomaly`: 19 calls (~4× benign volume), all clean, all
-`status: ok`, latency at 3× baseline — dense and fast, but every per-session
-ceiling (token budget, n-gram dominance) stays just under threshold.
-
-So: rules for invariants and a learner for diffuse drift.
+So: rules for invariants (precise, blind to diffuse drift), and a
+learner for diffuse, many-small-dials drift (broader, noisier).
 
 ## Scope
 
