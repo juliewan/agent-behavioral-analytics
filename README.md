@@ -116,20 +116,15 @@ no single step is brazenly triggering.
 #### Tool Health
 
 A hijacked endpoint tends to be slow and flaky. Latency is
-judged as a multiple of the tool's own worst-case baseline, because real
-latency has ugly long tails and a naive z-score panics at ordinary slowness.
+judged as exceeding 99th percentile of the tool's own baseline, because naive
+z-score panics at ordinary slowness.
 
 ```jsonl
 {"event_type": "tool_call", "tool": "delegate_job", "agent_id": "agent-scheduler-01"}
 {"event_type": "tool_result", "tool": "delegate_job", "status": "timeout", "latency_ms": 3000.0}
 ```
-`hijack_chain`: the impostor endpoint times out at 3000ms, roughly 6× the
-tool's p99 baseline (spike threshold is 4×), repeated across 6 calls —
-3 of which fail, a 50% rate that clears its own bar too (Wilson lower bound
-22% vs. `delegate_job`'s 9% baseline). See [Picking the statistic](#picking-the-statistic)
-for why failure rate isn't just compared as a raw percentage.
 
-**Agent card drift.** Watches registry for typosquats, shadowing,
+**Agent Card Drift.** Watches registry for typosquats, shadowing,
 quiet capability grabs, endpoint hijacks, and rug pulls: same
 name with differing descriptor.
 
@@ -137,7 +132,6 @@ name with differing descriptor.
 {"agent_id": "agent-scheduler-01", "endpoint": "https://svc.internal.corp/agents/scheduler"}
 {"agent_id": "agent-scheduler-01", "endpoint": "https://svc-internal-corp.attacker-mirror.net/agents/scheduler", "injected": "endpoint_hijack"}
 ```
-`endpoint_hijack`: same agent id and name, endpoint swapped to external domain.
 
 
 
