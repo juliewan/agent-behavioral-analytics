@@ -1,0 +1,29 @@
+# virtualenv / IDE
+venv/
+.venv/
+.idea/
+__pycache__/
+*.pyc
+
+# generated detector outputs (data/sample/*.jsonl + embeddings.npz ARE committed)
+*.csv
+!data/sample/*.npz
+
+# HF model cache if downloaded into repo
+.model_cache/
+
+# build artifacts
+*.egg-info/
+build/
+dist/
+
+# OS cruft
+.DS_Store
+
+# test/lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# local Claude Code permissions (machine-specific, not shared config)
+.claude/settings.local.json

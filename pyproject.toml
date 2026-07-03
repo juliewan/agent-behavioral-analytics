@@ -1,0 +1,36 @@
+[project]
+name = "agent-behavioral-analytics"
+version = "0.1.0"
+description = "SOC-for-agents demo: synthesize enterprise agent logs, inject attack patterns, detect them with a shared funnel."
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pandas",
+]
+
+# Everything rule-based runs without this. Only goal_drift and the
+# rug-pull / shadowing-upgrade rules in card_drift need embeddings
+# (PLANNING.md §2.1). Model is pinned in aiba/embed.py.
+[project.optional-dependencies]
+embed = [
+    "sentence-transformers",
+]
+# Terminal diagnostics need nothing extra; this is only for the --png dashboard
+# (official report graphics). The rule-based run + terminal diagnostics work
+# without it.
+viz = [
+    "matplotlib",
+]
+# Learned baseline: the Isolation Forest detector and its PR-curve benchmark
+# (scripts/eval_isoforest.py). Every rule-based detector runs without it; this
+# is the "does a learned generalist match the hand-built rules?" comparison.
+ml = [
+    "scikit-learn",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["aiba*"]
