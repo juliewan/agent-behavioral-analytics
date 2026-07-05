@@ -3,7 +3,7 @@
 The new insider threat is non-human 🤖
 
 <p align="center">
-  <img src="agent-behavioral-analytics.png" alt="Non-human Insider Threat" width="500">
+  <img src="agent-behavioral-analytics.png" alt="Non-human Insider Threat" width="300">
 </p>
 
 High precision detection suite on generated toy dataset
