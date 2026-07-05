@@ -1,11 +1,15 @@
 # agent behavioral analytics
 
-![Pipeline diagram](planning_diagrams/pipeline.png)
+The new insider threat is non-human 🤖
 
-High precision (and probably low recall) agent insider threat detection on synth toy dataset
-(month of agent-and-tool logs with injected attack scenarios).
+<p align="center">
+  <img src="agent-behavioral-analytics.png" alt="Non-human Insider Threat" width="500">
+</p>
 
-## Quick Start
+High precision detection suite on generated toy dataset
+(a month of agent-and-tool logs and cards with injected attacks).
+
+## Quickstart
 
 ```bash
 pip install -e ".[embed,viz,ml]"     # or plain `pip install -e .` for the rule core
@@ -17,6 +21,7 @@ python scripts/eval_isoforest.py     # rules vs. a learned model, benchmarked pr
 The extras are independent. `[embed]` adds the embedding detectors (goal
 drift, rug pull), `[viz]` the PNG dashboard, `[ml]` the Isolation Forest
 benchmark. The rule core needs none of them.
+
 
 ## Dashboard
 
@@ -116,7 +121,7 @@ no single step is brazenly triggering.
 #### Tool Health
 
 A hijacked endpoint tends to be slow and flaky. Latency is
-judged as exceeding 99th percentile of the tool's own baseline, because naive
+judged as multiply exceeding 99th percentile of baseline, because naive
 z-score panics at ordinary slowness.
 
 ```jsonl
